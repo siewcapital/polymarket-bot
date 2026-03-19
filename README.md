@@ -8,9 +8,29 @@ A Python trading bot for Polymarket with risk management and Telegram notificati
 - ✅ Places real trades (tested with $10 amounts)
 - ✅ Telegram notifications for all trades
 - ✅ Risk limits (max daily loss, max trade size)
-- ✅ Easy to configure and run
+- ✅ Position tracking with PnL calculation
+- ✅ CLI for easy operation
+- ✅ Webhook server for external signals
+- ✅ Easy setup and configuration
 
-## Quick Start
+## Quick Start (Automated)
+
+```bash
+# Clone the repo
+git clone https://github.com/siewcapital/polymarket-bot.git
+cd polymarket-bot
+
+# Run setup (installs dependencies, creates .env)
+python setup.py
+
+# Edit .env with your credentials
+nano .env
+
+# Run the bot
+python polymarket_bot.py
+```
+
+## Manual Setup
 
 ### 1. Install Dependencies
 
@@ -117,7 +137,78 @@ The bot sends notifications for:
 - ❌ Errors
 - 📊 Daily summary
 
-## Getting Your Private Key
+## CLI Usage
+
+The bot includes a command-line interface for easy operation:
+
+```bash
+# Show bot status
+python cli.py status
+
+# List active markets
+python cli.py markets
+
+# Show account balance
+python cli.py balance
+
+# Place orders
+python cli.py buy <token_id> 10 0.5   # Buy $10 at $0.50
+python cli.py sell <token_id> 10 0.6  # Sell $10 at $0.60
+
+# View and manage orders
+python cli.py orders
+python cli.py cancel
+
+# Track positions
+python cli.py positions
+```
+
+## Webhook Server
+
+Run the webhook server to receive trading signals from external sources:
+
+```bash
+# Start webhook server on port 8080
+python webhook_server.py
+
+# Or specify custom port
+WEBHOOK_PORT=3000 python webhook_server.py
+```
+
+### Webhook Endpoints
+
+- `GET /health` - Health check
+- `GET /status` - Bot status
+- `POST /webhook/trade` - Execute trade directly
+- `POST /webhook/signal` - Receive trading signal
+
+### Example Webhook Request
+
+```bash
+curl -X POST http://localhost:8080/webhook/trade \
+  -H "Content-Type: application/json" \
+  -d '{
+    "token_id": "your_token_id",
+    "side": "BUY",
+    "size": 10,
+    "price": 0.5
+  }'
+```
+
+## Position Tracking
+
+The bot automatically tracks all positions and calculates PnL:
+
+```python
+from position_tracker import PositionTracker
+
+tracker = PositionTracker()
+tracker.print_summary()
+```
+
+Positions are saved to `positions.json` for persistence.
+
+## Setup Script
 
 ### MetaMask / EOA Wallet
 
