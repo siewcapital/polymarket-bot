@@ -11,6 +11,9 @@ A Python trading bot for Polymarket with risk management and Telegram notificati
 - ✅ Position tracking with PnL calculation
 - ✅ CLI for easy operation
 - ✅ Webhook server for external signals
+- ✅ Market scanner for opportunities
+- ✅ Docker support
+- ✅ Unit tests
 - ✅ Easy setup and configuration
 
 ## Quick Start (Automated)
@@ -210,7 +213,105 @@ Positions are saved to `positions.json` for persistence.
 
 ## Setup Script
 
-### MetaMask / EOA Wallet
+Run the interactive setup:
+
+```bash
+python setup.py
+```
+
+This will:
+1. Check Python version
+2. Install dependencies
+3. Test imports
+4. Create `.env` file from template
+
+## Docker Deployment
+
+Run with Docker:
+
+```bash
+# Build and run
+docker-compose up -d
+
+# With webhook server
+docker-compose --profile webhook up -d
+
+# View logs
+docker-compose logs -f
+```
+
+## Market Scanner
+
+Scan for trading opportunities:
+
+```bash
+# Full market scan
+python market_scanner.py
+
+# Specific scan types
+python market_scanner.py --type high_probability
+python market_scanner.py --type undervalued
+python market_scanner.py --type volume
+
+# Save results to file
+python market_scanner.py --output scan_results.json
+```
+
+## Testing
+
+Run the test suite:
+
+```bash
+python test_bot.py
+```
+
+Tests cover:
+- Risk management
+- Telegram notifications
+- Position tracking
+- Configuration loading
+
+## Systemd Service
+
+Install as a system service:
+
+```bash
+# Copy service file
+sudo cp polymarket-bot.service /etc/systemd/system/
+
+# Edit paths and user in service file
+sudo systemctl edit polymarket-bot
+
+# Start service
+sudo systemctl enable polymarket-bot
+sudo systemctl start polymarket-bot
+
+# View logs
+sudo journalctl -u polymarket-bot -f
+```
+
+## File Structure
+
+```
+polymarket-bot/
+├── polymarket_bot.py      # Main trading bot
+├── cli.py                 # Command-line interface
+├── webhook_server.py      # HTTP webhook server
+├── position_tracker.py    # Position tracking & PnL
+├── market_scanner.py      # Market opportunity scanner
+├── strategy_example.py    # Example trading strategies
+├── setup.py               # Interactive setup script
+├── test_bot.py            # Unit tests
+├── requirements.txt       # Python dependencies
+├── Dockerfile             # Docker image
+├── docker-compose.yml     # Docker Compose config
+├── polymarket-bot.service # systemd service file
+├── README.md              # Documentation
+├── LICENSE                # MIT License
+└── .env.example           # Environment template
+```
+
+## Getting Your Private Key
 
 1. Open MetaMask
 2. Click the three dots menu → Account Details
