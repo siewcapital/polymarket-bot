@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  polymarket-bot:
+    build: .
+    container_name: polymarket-bot
+    restart: unless-stopped
+    env_file:
+      - .env
+    volumes:
+      - ./data:/app/data
+      - ./positions.json:/app/positions.json
+    ports:
+      - "${WEBHOOK_PORT:-8080}:8080"
+    command: python polymarket_bot.py
+
+  webhook-server:
+    build: .
+    container_name: polymarket-webhook
+    restart: unless-stopped
+    env_file:
+      - .env
+    volumes:
+      - ./data:/app/data
+      - ./positions.json:/app/positions.json
+    ports:
+      - "${WEBHOOK_PORT:-8080}:8080"
+    command: python webhook_server.py
+    profiles:
+      - webhook
